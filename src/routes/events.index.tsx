@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { EventCard } from "@/components/EventCard";
+import type { Tables } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/events/")({
   head: () => ({
@@ -13,18 +14,7 @@ export const Route = createFileRoute("/events/")({
   component: EventsListPage,
 });
 
-type Event = {
-  id: string;
-  slug: string;
-  title: string;
-  tagline: string;
-  starts_at: string;
-  ends_at: string;
-  location: string;
-  format: string;
-  cover_emoji: string;
-  featured: boolean;
-};
+type Event = Tables<"events">;
 
 function EventsListPage() {
   const [events, setEvents] = useState<Event[]>([]);
@@ -34,7 +24,7 @@ function EventsListPage() {
   useEffect(() => {
     supabase
       .from("events")
-      .select("id, slug, title, tagline, starts_at, ends_at, location, format, cover_emoji, featured")
+      .select("*")
       .order("starts_at", { ascending: true })
       .then(({ data }) => setEvents((data as Event[]) ?? []));
   }, []);
