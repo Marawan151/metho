@@ -12,10 +12,14 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EventsIndexRouteImport } from './routes/events.index'
 import { Route as EventsSlugRouteImport } from './routes/events.$slug'
+import { Route as ConfirmationOrderIdRouteImport } from './routes/confirmation.$orderId'
+import { Route as CheckoutSlugRouteImport } from './routes/checkout.$slug'
+import { Route as EventsSlugTicketsRouteImport } from './routes/events.$slug.tickets'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
@@ -30,6 +34,11 @@ const ProfileRoute = ProfileRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -52,72 +61,114 @@ const EventsSlugRoute = EventsSlugRouteImport.update({
   path: '/events/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConfirmationOrderIdRoute = ConfirmationOrderIdRouteImport.update({
+  id: '/confirmation/$orderId',
+  path: '/confirmation/$orderId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutSlugRoute = CheckoutSlugRouteImport.update({
+  id: '/checkout/$slug',
+  path: '/checkout/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsSlugTicketsRoute = EventsSlugTicketsRouteImport.update({
+  id: '/tickets',
+  path: '/tickets',
+  getParentRoute: () => EventsSlugRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRoute
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
-  '/events/$slug': typeof EventsSlugRoute
+  '/checkout/$slug': typeof CheckoutSlugRoute
+  '/confirmation/$orderId': typeof ConfirmationOrderIdRoute
+  '/events/$slug': typeof EventsSlugRouteWithChildren
   '/events/': typeof EventsIndexRoute
+  '/events/$slug/tickets': typeof EventsSlugTicketsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRoute
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
-  '/events/$slug': typeof EventsSlugRoute
+  '/checkout/$slug': typeof CheckoutSlugRoute
+  '/confirmation/$orderId': typeof ConfirmationOrderIdRoute
+  '/events/$slug': typeof EventsSlugRouteWithChildren
   '/events': typeof EventsIndexRoute
+  '/events/$slug/tickets': typeof EventsSlugTicketsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRoute
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
-  '/events/$slug': typeof EventsSlugRoute
+  '/checkout/$slug': typeof CheckoutSlugRoute
+  '/confirmation/$orderId': typeof ConfirmationOrderIdRoute
+  '/events/$slug': typeof EventsSlugRouteWithChildren
   '/events/': typeof EventsIndexRoute
+  '/events/$slug/tickets': typeof EventsSlugTicketsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
+    | '/admin'
     | '/login'
     | '/profile'
     | '/register'
+    | '/checkout/$slug'
+    | '/confirmation/$orderId'
     | '/events/$slug'
     | '/events/'
+    | '/events/$slug/tickets'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/admin'
     | '/login'
     | '/profile'
     | '/register'
+    | '/checkout/$slug'
+    | '/confirmation/$orderId'
     | '/events/$slug'
     | '/events'
+    | '/events/$slug/tickets'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/admin'
     | '/login'
     | '/profile'
     | '/register'
+    | '/checkout/$slug'
+    | '/confirmation/$orderId'
     | '/events/$slug'
     | '/events/'
+    | '/events/$slug/tickets'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRoute
   LoginRoute: typeof LoginRoute
   ProfileRoute: typeof ProfileRoute
   RegisterRoute: typeof RegisterRoute
-  EventsSlugRoute: typeof EventsSlugRoute
+  CheckoutSlugRoute: typeof CheckoutSlugRoute
+  ConfirmationOrderIdRoute: typeof ConfirmationOrderIdRoute
+  EventsSlugRoute: typeof EventsSlugRouteWithChildren
   EventsIndexRoute: typeof EventsIndexRoute
 }
 
@@ -142,6 +193,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -172,18 +230,64 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EventsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/confirmation/$orderId': {
+      id: '/confirmation/$orderId'
+      path: '/confirmation/$orderId'
+      fullPath: '/confirmation/$orderId'
+      preLoaderRoute: typeof ConfirmationOrderIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout/$slug': {
+      id: '/checkout/$slug'
+      path: '/checkout/$slug'
+      fullPath: '/checkout/$slug'
+      preLoaderRoute: typeof CheckoutSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events/$slug/tickets': {
+      id: '/events/$slug/tickets'
+      path: '/tickets'
+      fullPath: '/events/$slug/tickets'
+      preLoaderRoute: typeof EventsSlugTicketsRouteImport
+      parentRoute: typeof EventsSlugRoute
+    }
   }
 }
+
+interface EventsSlugRouteChildren {
+  EventsSlugTicketsRoute: typeof EventsSlugTicketsRoute
+}
+
+const EventsSlugRouteChildren: EventsSlugRouteChildren = {
+  EventsSlugTicketsRoute: EventsSlugTicketsRoute,
+}
+
+const EventsSlugRouteWithChildren = EventsSlugRoute._addFileChildren(
+  EventsSlugRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AdminRoute: AdminRoute,
   LoginRoute: LoginRoute,
   ProfileRoute: ProfileRoute,
   RegisterRoute: RegisterRoute,
-  EventsSlugRoute: EventsSlugRoute,
+  CheckoutSlugRoute: CheckoutSlugRoute,
+  ConfirmationOrderIdRoute: ConfirmationOrderIdRoute,
+  EventsSlugRoute: EventsSlugRouteWithChildren,
   EventsIndexRoute: EventsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
