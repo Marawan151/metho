@@ -62,6 +62,110 @@ export type Database = {
         }
         Relationships: []
       }
+      orders: {
+        Row: {
+          created_at: string
+          discount_pct: number
+          event_id: string
+          id: string
+          promo_code: string | null
+          quantity: number
+          registration_id: string | null
+          status: string
+          ticket_type: string
+          total_cents: number
+          unit_price_cents: number
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          discount_pct?: number
+          event_id: string
+          id?: string
+          promo_code?: string | null
+          quantity?: number
+          registration_id?: string | null
+          status?: string
+          ticket_type: string
+          total_cents: number
+          unit_price_cents: number
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          discount_pct?: number
+          event_id?: string
+          id?: string
+          promo_code?: string | null
+          quantity?: number
+          registration_id?: string | null
+          status?: string
+          ticket_type?: string
+          total_cents?: number
+          unit_price_cents?: number
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          company: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      promo_codes: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string
+          discount_pct: number
+          id: string
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string
+          discount_pct: number
+          id?: string
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string
+          discount_pct?: number
+          id?: string
+        }
+        Relationships: []
+      }
       registrations: {
         Row: {
           company: string | null
@@ -109,15 +213,42 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -244,6 +375,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
