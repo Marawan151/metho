@@ -14,7 +14,101 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      events: {
+        Row: {
+          capacity: number
+          cover_emoji: string
+          created_at: string
+          description: string
+          ends_at: string
+          featured: boolean
+          format: string
+          id: string
+          location: string
+          slug: string
+          starts_at: string
+          tagline: string
+          title: string
+        }
+        Insert: {
+          capacity?: number
+          cover_emoji?: string
+          created_at?: string
+          description: string
+          ends_at: string
+          featured?: boolean
+          format?: string
+          id?: string
+          location: string
+          slug: string
+          starts_at: string
+          tagline: string
+          title: string
+        }
+        Update: {
+          capacity?: number
+          cover_emoji?: string
+          created_at?: string
+          description?: string
+          ends_at?: string
+          featured?: boolean
+          format?: string
+          id?: string
+          location?: string
+          slug?: string
+          starts_at?: string
+          tagline?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      registrations: {
+        Row: {
+          company: string | null
+          created_at: string
+          dietary: string | null
+          email: string
+          event_id: string
+          full_name: string
+          id: string
+          notes: string | null
+          role: string | null
+          ticket_type: string
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          dietary?: string | null
+          email: string
+          event_id: string
+          full_name: string
+          id?: string
+          notes?: string | null
+          role?: string | null
+          ticket_type?: string
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          dietary?: string | null
+          email?: string
+          event_id?: string
+          full_name?: string
+          id?: string
+          notes?: string | null
+          role?: string | null
+          ticket_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "registrations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
