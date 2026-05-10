@@ -204,3 +204,4 @@ export function RegistrationForm({ eventId, eventTitle }: { eventId: string; eve
   );
 }
 // METHO-15: Registration form component 
+// METHO-15: Registration form component 
