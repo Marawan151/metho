@@ -112,3 +112,7 @@ function TicketsPage() {
   );
 }
 // METHO-12: Ticket purchase flow 
+<<<<<<< HEAD
+=======
+// METHO-12: Ticket purchase flow 
+>>>>>>> feature-c
