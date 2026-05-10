@@ -68,3 +68,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export const useAuth = () => useContext(Ctx);
 // METHO-18: JWT auth middleware 
+// METHO-18: JWT auth middleware 
