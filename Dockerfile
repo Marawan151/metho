@@ -1,6 +1,15 @@
-FROM alpine:latest
+FROM node:20-alpine
+
 WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
 COPY . .
-RUN echo "Build successful!"
+
+RUN npm run build
+
 EXPOSE 3000
-CMD ["echo", "Container is running"]
+
+CMD ["npm", "start"]
