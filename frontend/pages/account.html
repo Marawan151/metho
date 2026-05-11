@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My registrations — Register</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <script src="../js/site-config.js"></script>
+  <script src="../js/core.js"></script>
+  <script src="../js/nav.js" defer></script>
+</head>
+<body>
+  <header class="app-header">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"></span> Home</a>
+    <h1 class="page-title">Account</h1>
+    <nav id="app-nav" class="nav" aria-label="Primary"></nav>
+  </header>
+  <main class="app-main stack">
+    <div class="card">
+      <h2>Profile</h2>
+      <div id="account-summary"></div>
+      <div class="btn-row">
+        <button type="button" onclick="logout()">Sign out</button>
+        <a class="btn btn-secondary" href="events.html">Browse events</a>
+      </div>
+    </div>
+    <div class="card">
+      <h2>My registrations</h2>
+      <p class="muted">Each row links to the printable confirmation for that reference.</p>
+      <div id="reg-list"><p class="muted">Loading…</p></div>
+    </div>
+  </main>
+  <script src="../js/account.js"></script>
+</body>
+</html>

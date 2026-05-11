@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign in — Register</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <script src="../js/site-config.js"></script>
+  <script src="../js/core.js"></script>
+  <script src="../js/nav.js" defer></script>
+</head>
+<body>
+  <header class="app-header">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"></span> Home</a>
+    <h1 class="page-title">Sign in</h1>
+    <nav id="app-nav" class="nav" aria-label="Primary"></nav>
+  </header>
+  <main class="app-main">
+    <div class="card" style="max-width:420px;margin:0 auto">
+      <h2>Welcome back</h2>
+      <p class="muted">Use the same email and password you registered with.</p>
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="username" />
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password" />
+      <div class="btn-row">
+        <button type="button" onclick="login()">Sign in</button>
+        <a class="btn btn-secondary" href="register.html">Need an account?</a>
+      </div>
+      <p class="hint">Try <code>demo@test.com</code> / <code>demo123</code> or the admin account from the home page.</p>
+    </div>
+  </main>
+  <script src="../js/auth.js"></script>
+</body>
+</html>

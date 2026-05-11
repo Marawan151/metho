@@ -1,0 +1,21 @@
+# Netlify only serves the files under /frontend (static HTML/CSS/JS).
+# This app’s API is Node + Express + MySQL — Netlify cannot run that from this repo.
+#
+# Deploy the API separately (Render, Railway, Fly.io, a VPS, etc.), then set the URL in
+# frontend/js/site-config.js (window.__API_BASE__) so the browser can reach /api.
+#
+# Build: none. Site root is the "frontend" folder so /pages/… and /js/… URLs work.
+
+[build]
+  command = "echo Static frontend only"
+  publish = "frontend"
+
+[[redirects]]
+  from = "/"
+  to = "/pages/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/pages/index.html"
+  status = 200
