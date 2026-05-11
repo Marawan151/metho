@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Create account — Register</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <script src="../js/site-config.js"></script>
+  <script src="../js/core.js"></script>
+  <script src="../js/nav.js" defer></script>
+</head>
+<body>
+  <header class="app-header">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"></span> Home</a>
+    <h1 class="page-title">Register</h1>
+    <nav id="app-nav" class="nav" aria-label="Primary"></nav>
+  </header>
+  <main class="app-main">
+    <div class="card" style="max-width:440px;margin:0 auto">
+      <h2>Create your account</h2>
+      <p class="muted">Attendee accounts can register for published events and keep every reference in one place.</p>
+      <label for="reg-name">Full name</label>
+      <input id="reg-name" type="text" autocomplete="name" />
+      <label for="reg-email">Email</label>
+      <input id="reg-email" type="email" autocomplete="email" />
+      <label for="reg-password">Password</label>
+      <input id="reg-password" type="password" autocomplete="new-password" />
+      <p id="register-msg" class="hint"></p>
+      <div class="btn-row">
+        <button type="button" onclick="register()">Create account</button>
+        <a class="btn btn-secondary" href="login.html">Already registered?</a>
+      </div>
+    </div>
+  </main>
+  <script src="../js/register.js"></script>
+</body>
+</html>

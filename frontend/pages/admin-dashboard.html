@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin — Register</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <script src="../js/site-config.js"></script>
+  <script src="../js/core.js"></script>
+  <script src="../js/nav.js" defer></script>
+</head>
+<body>
+  <header class="app-header">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"></span> Home</a>
+    <h1 class="page-title">Admin</h1>
+    <nav id="app-nav" class="nav" aria-label="Primary"></nav>
+  </header>
+
+  <div id="admin-gate" class="admin-gate">
+    <p class="muted" style="text-align:center;padding:2rem">Checking access…</p>
+  </div>
+
+  <div id="admin-app" class="admin-app hidden">
+    <main class="app-main stack">
+      <div class="card">
+        <h1 style="margin:0 0 0.35rem">Operations</h1>
+        <p class="muted">Live counts and registration feed. Event editor uses the same API your attendees hit.</p>
+        <p id="admin-load-error" class="alert" style="display:none;margin-top:0.75rem"></p>
+      </div>
+
+      <section class="admin-stats" aria-label="Summary">
+        <div class="admin-stat">
+          <span class="l">Users</span>
+          <span class="v" id="stat-users">—</span>
+        </div>
+        <div class="admin-stat">
+          <span class="l">Events</span>
+          <span class="v" id="stat-events">—</span>
+        </div>
+        <div class="admin-stat">
+          <span class="l">Registrations</span>
+          <span class="v" id="stat-regs">—</span>
+        </div>
+        <div class="admin-stat">
+          <span class="l">Tickets sold</span>
+          <span class="v" id="stat-sold">—</span>
+        </div>
+      </section>
+
+      <div class="card" id="event-editor">
+        <h2 id="ev-form-title">Create event</h2>
+        <p class="muted">Slug appears in public URLs. Price is in dollars (e.g. 129.00).</p>
+        <form id="event-form" class="stack" style="gap:0">
+          <label for="ev-slug">Slug</label>
+          <input id="ev-slug" required placeholder="e.g. spring-gala-2026" />
+          <label for="ev-title">Title</label>
+          <input id="ev-title" required />
+          <label for="ev-summary">Short summary</label>
+          <input id="ev-summary" maxlength="400" placeholder="One line for cards" />
+          <label for="ev-description">Description</label>
+          <textarea id="ev-description" placeholder="Longer copy for the event page"></textarea>
+          <label for="ev-location">Venue / location</label>
+          <input id="ev-location" />
+          <div class="split split-2">
+            <div>
+              <label for="ev-starts">Starts</label>
+              <input id="ev-starts" type="datetime-local" required />
+            </div>
+            <div>
+              <label for="ev-ends">Ends (optional)</label>
+              <input id="ev-ends" type="datetime-local" />
+            </div>
+          </div>
+          <div class="split split-2">
+            <div>
+              <label for="ev-capacity">Capacity</label>
+              <input id="ev-capacity" type="number" min="1" value="100" required />
+            </div>
+            <div>
+              <label for="ev-price">Price (USD)</label>
+              <input id="ev-price" type="number" min="0" step="0.01" value="0" required />
+            </div>
+          </div>
+          <label style="text-transform:none;letter-spacing:0">
+            <input id="ev-published" type="checkbox" checked /> Published (visible on public catalog)
+          </label>
+          <div class="btn-row">
+            <button type="submit">Save event</button>
+            <button type="button" class="btn btn-secondary" id="ev-new">New event</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="admin-panels">
+        <div class="card">
+          <h2>Users</h2>
+          <div class="table-wrap">
+            <table class="data" id="admin-users">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Joined</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Events (fill)</h2>
+          <div class="table-wrap">
+            <table class="data" id="admin-events">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Slug</th>
+                  <th>Title</th>
+                  <th>Starts</th>
+                  <th>Sold / cap</th>
+                  <th>Left</th>
+                  <th>Pub</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Manage events</h2>
+        <p class="muted">Edit loads the form above. Delete only works when zero registrations exist.</p>
+        <div class="table-wrap">
+          <table class="data" id="admin-event-rows">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Slug</th>
+                <th>Title</th>
+                <th>Starts</th>
+                <th>State</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Recent registrations</h2>
+        <div class="table-wrap">
+          <table class="data" id="admin-bookings">
+            <thead>
+              <tr>
+                <th>When</th>
+                <th>Ref</th>
+                <th>Attendee</th>
+                <th>Event</th>
+                <th>Qty</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/admin.js"></script>
+</body>
+</html>
