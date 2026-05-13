@@ -33,7 +33,10 @@ exports.listMine = (req, res) => {
      ORDER BY r.created_at DESC`,
     [userId],
     (err, rows) => {
-      if (err) return res.status(500).json({ message: 'Could not load registrations' });
+      if (err) {
+        console.error('[registrations] listMine Error:', err.message);
+        return res.status(500).json({ message: 'Could not load registrations' });
+      }
       return res.json((rows || []).map(mapRow));
     }
   );
@@ -65,7 +68,10 @@ exports.getByRef = (req, res) => {
      LIMIT 1`,
     [ref, userId],
     (err, rows) => {
-      if (err) return res.status(500).json({ message: 'Could not load registration' });
+      if (err) {
+        console.error('[registrations] getByRef Error:', err.message);
+        return res.status(500).json({ message: 'Could not load registration' });
+      }
       if (!rows || rows.length === 0) return res.status(404).json({ message: 'Registration not found' });
       return res.json(mapRow(rows[0]));
     }
@@ -81,37 +87,32 @@ exports.create = async (req, res) => {
   }
 
   const eid = Number(eventId);
-  if (!Number.isInteger(eid) || eid <= 0) {
-    return res.status(400).json({ message: 'eventId must be a positive integer' });
-  }
-
   const qty = Number(quantity || 1);
-  if (!Number.isInteger(qty) || qty < 1 || qty > MAX_PER_ORDER) {
-    return res.status(400).json({ message: `quantity must be an integer from 1 to ${MAX_PER_ORDER}` });
-  }
 
   let conn;
   try {
     conn = await pool.promise().getConnection();
     await conn.beginTransaction();
 
-    const [[eventRow]] = await conn.query(
+    const [eventRows] = await conn.query(
       `SELECT id, capacity, price_cents, published
        FROM events WHERE id = ? FOR UPDATE`,
       [eid]
     );
+    const eventRow = eventRows && eventRows[0];
 
     if (!eventRow || !eventRow.published) {
       await conn.rollback();
       return res.status(404).json({ message: 'Event not found or not open for registration' });
     }
 
-    const [[agg]] = await conn.query(
+    const [aggRows] = await conn.query(
       `SELECT COALESCE(SUM(quantity), 0) AS sold
        FROM registrations
-       WHERE event_id = ? AND status = 'confirmed' FOR UPDATE`,
+       WHERE event_id = ? AND status = 'confirmed'`,
       [eid]
     );
+    const agg = aggRows && aggRows[0];
 
     const sold = Number(agg.sold) || 0;
     const cap = Number(eventRow.capacity) || 0;
@@ -120,10 +121,7 @@ exports.create = async (req, res) => {
     if (qty > remaining) {
       await conn.rollback();
       return res.status(400).json({
-        message:
-          remaining <= 0
-            ? 'This event is full'
-            : `Only ${remaining} seat(s) still available for this event`,
+        message: remaining <= 0 ? 'This event is full' : `Only ${remaining} seat(s) still available`,
       });
     }
 
@@ -131,7 +129,7 @@ exports.create = async (req, res) => {
     const totalCents = unit * qty;
 
     let publicRef = null;
-    for (let attempt = 0; attempt < 10; attempt += 1) {
+    for (let attempt = 0; attempt < 5; attempt += 1) {
       const candidate = crypto.randomBytes(5).toString('hex');
       try {
         await conn.query(
@@ -148,8 +146,7 @@ exports.create = async (req, res) => {
     }
 
     if (!publicRef) {
-      await conn.rollback();
-      return res.status(500).json({ message: 'Could not complete registration' });
+      throw new Error('Failed to generate unique public_ref after multiple attempts');
     }
 
     await conn.commit();
@@ -162,14 +159,11 @@ exports.create = async (req, res) => {
       event_id: eid,
     });
   } catch (err) {
+    console.error('[registrations] create Error:', err.message);
     if (conn) {
-      try {
-        await conn.rollback();
-      } catch (_) {
-        /* ignore */
-      }
+      try { await conn.rollback(); } catch (_) { /* ignore */ }
     }
-    return res.status(500).json({ message: 'Registration failed' });
+    return res.status(500).json({ message: 'Registration failed: ' + err.message });
   } finally {
     if (conn) conn.release();
   }
