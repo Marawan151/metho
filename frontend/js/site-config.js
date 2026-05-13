@@ -8,5 +8,5 @@
   // TODO BEFORE NETLIFY DEPLOY: 
   // Change the empty string below to your hosted backend URL (e.g., Render, Railway).
   // Example: w.__API_BASE__ = 'https://event-api.onrender.com/api';
-  if (typeof w.__API_BASE__ === 'undefined') w.__API_BASE__ = '';
+  if (typeof w.__API_BASE__ === 'undefined') w.__API_BASE__ = 'https://event-registration-api-production.up.railway.app/api';
 })(typeof window !== 'undefined' ? window : globalThis);
