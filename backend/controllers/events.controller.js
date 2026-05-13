@@ -30,12 +30,10 @@ const publicFields = `
   e.ends_at,
   e.capacity,
   e.price_cents,
-  CAST(
-    e.capacity - COALESCE((
-      SELECT SUM(r.quantity) FROM registrations r
-      WHERE r.event_id = e.id AND r.status = 'confirmed'
-    ), 0) AS INTEGER
-  ) AS spots_remaining
+  (e.capacity - COALESCE((
+    SELECT SUM(r.quantity) FROM registrations r
+    WHERE r.event_id = e.id AND r.status = 'confirmed'
+  ), 0))::INTEGER AS spots_remaining
 `;
 
 const baseFrom = `FROM events e`;
@@ -44,7 +42,7 @@ exports.listPublished = (req, res) => {
   const sql = `SELECT ${publicFields} ${baseFrom} WHERE e.published = 1 ORDER BY e.starts_at ASC`;
   pool.query(sql, (err, rows) => {
     if (err) {
-      console.error('[events] listPublished', err.message);
+      console.error('[events] listPublished Error:', err.message);
       return res.status(500).json({ message: 'Could not load events' });
     }
     const out = (rows || []).map(normalizeEventRow);
@@ -61,7 +59,7 @@ exports.getBySlug = (req, res) => {
   const sql = `SELECT ${publicFields} ${baseFrom} WHERE e.slug = ? AND e.published = 1 LIMIT 1`;
   pool.query(sql, [slug.trim()], (err, rows) => {
     if (err) {
-      console.error('[events] getBySlug', err.message);
+      console.error('[events] getBySlug Error:', err.message);
       return res.status(500).json({ message: 'Could not load event' });
     }
     if (!rows || rows.length === 0) return res.status(404).json({ message: 'Event not found' });
@@ -79,7 +77,7 @@ exports.getById = (req, res) => {
   const sql = `SELECT ${publicFields} ${baseFrom} WHERE e.id = ? AND e.published = 1 LIMIT 1`;
   pool.query(sql, [id], (err, rows) => {
     if (err) {
-      console.error('[events] getById', err.message);
+      console.error('[events] getById Error:', err.message);
       return res.status(500).json({ message: 'Could not load event' });
     }
     if (!rows || rows.length === 0) return res.status(404).json({ message: 'Event not found' });
